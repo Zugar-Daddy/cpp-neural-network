@@ -1,3 +1,5 @@
+Pixels Normalized Successfully
+One Hot Encoded
 Magic: 2051
 Images: 60000
 Rows: 28
