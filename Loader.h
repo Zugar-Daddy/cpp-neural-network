@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cstdint>
 #include <fstream>
 #include <iostream>
@@ -49,6 +50,7 @@ public:
 
 
     void NormalizePixels(){
+        cout << "Pixels Normalization begins....\n";
         for(int i = 0; i < 60000*784; i++){
             normalized_images[i] = (double) ((unsigned char)images[i]) / 255.0;
         }
@@ -104,7 +106,7 @@ public:
 
         NormalizePixels(); OneHotEncode();
 
-        Debug();
+        // Debug();
         // closing files
         image_file.close(); labels_file.close();
         return 0;

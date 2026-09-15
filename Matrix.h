@@ -1,11 +1,11 @@
 #pragma once
 
-#include <iostream>
+#include <cfloat>
+#include <cmath>
+#include <numeric>
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
-using namespace std;
-
 class Matrix{
 
     int row, col = 0;
@@ -13,35 +13,26 @@ class Matrix{
 public:
 
     // matrix [row][col]
-    vector<vector<double>> matrix;
+    std::vector<std::vector<double>> matrix;
     
     int getRow() {return row;}
     int getCol() {return col;}
 
     Matrix(){row = 0; col = 0;}
 
-    Matrix(int r, int c, bool input, vector<vector<double>> mat = {}){
+    Matrix(int r, int c, std::vector<std::vector<double>> mat = {}){
         this->row = r;
         this->col = c;
 
         if(r == 0 || c == 0) return;
 
-        if(input){
-            matrix.resize(row, vector<double>(col));
-            for(int i = 0; i < col; i++){
-                for(int j = 0; j < row; j++){
-                    std::cin >> matrix[i][j];
-                }
-            }
+        if(mat.empty()){
+            matrix.resize(row, std::vector<double>(col, 0.0));
         }
         else{
-            if(mat.empty()){
-                matrix.resize(row, vector<double>(col, 0.0));
-            }
-            else{
-                this->matrix = mat;
-            }
+            matrix = mat;
         }
+        
     }
 
     static Matrix Multiply(Matrix& m1, Matrix& m2, bool elementWise = false){
@@ -49,10 +40,10 @@ public:
 
         if(!elementWise){
             if(col1 != row2){
-                throw invalid_argument("Invalid Multiplication");
+                throw std::invalid_argument("Invalid Multiplication");
             }
             
-            Matrix result(row1, col2, false);
+            Matrix result(row1, col2);
             for(int i = 0; i < row1; i++){
                 for(int j = 0; j < col2; j++){
                     double sum = 0.0;
@@ -67,10 +58,10 @@ public:
         }
         else{
             if (row1 != row2 || col1 != col2){
-                throw invalid_argument("Invalid Multiplication");
+                throw std::invalid_argument("Invalid Multiplication");
             }
 
-            Matrix result(row1, col1, false);
+            Matrix result(row1, col1);
             for(int i = 0; i < col1; i++){
                 for(int j = 0; j < row1; j++){
                     result.matrix[i][j] = m1.matrix[i][j] * m2.matrix[i][j];
@@ -82,7 +73,7 @@ public:
     }
 
     static Matrix Multiply(double c, Matrix& m){
-        Matrix result(m.row, m.col, false);
+        Matrix result(m.row, m.col);
 
         for(int i = 0; i < m.row; i++){
             for(int j = 0; j < m.col; j++){
@@ -97,10 +88,10 @@ public:
         int n1 = m1.row, n2 = m1.col, mm1 = m2.row, mm2 = m2.col;
 
         if(n1 != mm1 || n2 != mm2){
-            throw invalid_argument("Invalid Multiplication");
+            throw std::invalid_argument("Invalid Multiplication");
         }
         
-        Matrix result(m1.row, m1.col, false);
+        Matrix result(m1.row, m1.col);
 
         for(int i = 0; i < n1; i++){
             for(int j = 0; j < n2; j++){
@@ -115,10 +106,10 @@ public:
         int n1 = m1.row, n2 = m1.col, mm1 = m2.row, mm2 = m2.col;
 
         if(n1 != mm1 || n2 != mm2){
-            throw invalid_argument("Invalid Multiplication");
+            throw std::invalid_argument("Invalid Multiplication");
         }
         
-        Matrix result(m1.row, m1.col, false);
+        Matrix result(m1.row, m1.col);
 
         for(int i = 0; i < n1; i++){
             for(int j = 0; j < n2; j++){
@@ -130,7 +121,7 @@ public:
     }
 
     static Matrix Transpose(Matrix& m){
-        Matrix result(m.col, m.row, false);
+        Matrix result(m.col, m.row);
 
         for(int i = 0; i < m.row; i++){
             for(int j = 0; j < m.col; j++){
@@ -140,5 +131,52 @@ public:
         
         return result;
     }
-    
+
+    static Matrix Apply_ReLU(Matrix& m){
+        Matrix result(m.row, m.col);
+        for(int i = 0; i < m.row; i++){
+            for(int j = 0; j < m.col; j++){
+                result.matrix[i][j] = std::max(0.0, m.matrix[i][j]);
+            }
+        }
+        return result;
+    }
+
+
+
+    static Matrix Apply_SoftMax(Matrix& m){
+
+        int r = m.row, c = m.col;
+        Matrix result(r, c);
+
+        // ez/(summation ez) = e(z - M)/(summation e(z - M))
+
+        // finding M
+        double maxi = -DBL_MAX;
+        for(int i = 0; i < r; i++){
+            for(int j = 0; j < c; j++){
+                maxi = std::max(m.matrix[i][j], maxi);                
+            }
+        }
+
+        // now storing everything in result as exp(z - M) and keeping track of their sum as well
+        double sum = 0;
+        for(int i = 0; i < r; i++){
+            for(int j = 0; j < c; j++){
+                double val = std::exp(m.matrix[i][j] - maxi);
+                result.matrix[i][j] = val;
+                sum += val;
+            }
+        }
+
+        // dividing everything
+        for(int i = 0; i < r; i++){
+            for(int j = 0; j < c; j++){
+                result.matrix[i][j] /= sum;
+            }
+        }
+
+
+        return result;
+    }
 };
