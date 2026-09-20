@@ -25,6 +25,15 @@
               "kind": "build",
               "isDefault": true
           }
+      },
+      {
+          "label": "Neural Net Compile and Run",
+          "type": "shell",
+          "command": "g++ -std=c++17 -O3 -march=native -ffast-math -o \"${fileBasenameNoExtension}\" \"${file}\" && ./${fileBasenameNoExtension} < input.txt > output.txt",
+          "group": {
+              "kind": "build",
+              "isDefault": false
+          }
       }
   ]
 }
