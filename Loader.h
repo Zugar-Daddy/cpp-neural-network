@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
-using namespace std;
 
 
 class Loader{
@@ -19,30 +18,30 @@ public:
     void change_endian(char* bigEndian, int size){
         char* end = bigEndian + size - 1;
         for(int i = 0; i < size / 2; i++){
-            swap(*(bigEndian + i), *(end - i));
+            std::swap(*(bigEndian + i), *(end - i));
         }
     }
 
     void Debug(){
 
-        cout << "Magic: "  << *reinterpret_cast<uint32_t*>(magic_number) << "\n";
-        cout << "Images: " << *reinterpret_cast<uint32_t*>(num_images) << "\n";
-        cout << "Rows: "   << *reinterpret_cast<uint32_t*>(rows) << "\n";
-        cout << "Cols: "   << *reinterpret_cast<uint32_t*>(cols) << "\n";
-        cout << '\n';    
-        cout << "Magic: "  << *reinterpret_cast<uint32_t*>(magic) << "\n";
-        cout << "Images: " << *reinterpret_cast<uint32_t*>(num) << "\n";
+        std::cout << "Magic: "  << *reinterpret_cast<uint32_t*>(magic_number) << "\n";
+        std::cout << "Images: " << *reinterpret_cast<uint32_t*>(num_images) << "\n";
+        std::cout << "Rows: "   << *reinterpret_cast<uint32_t*>(rows) << "\n";
+        std::cout << "Cols: "   << *reinterpret_cast<uint32_t*>(cols) << "\n";
+        std::cout << '\n';    
+        std::cout << "Magic: "  << *reinterpret_cast<uint32_t*>(magic) << "\n";
+        std::cout << "Images: " << *reinterpret_cast<uint32_t*>(num) << "\n";
         
         int c = 0;
         for(int j = 0; j < 5; j++){
-            cout << '\n' << (int)(unsigned char)label_exact[j] << '\n' << '\n';
+            std::cout << '\n' << (int)(unsigned char)label_exact[j] << '\n' << '\n';
             for(int i = 0; i < 784; i++){
-                if((int)(unsigned char)images[(784 * j) + i] > 128) cout << '#';
-                else cout << '.';
+                if((int)(unsigned char)images[(784 * j) + i] > 128) std::cout << '#';
+                else std::cout << '.';
                 c++;
                 if(c == 28){
                     c = 0;
-                    cout << '\n';
+                    std::cout << '\n';
                 }
             }
         }
@@ -50,19 +49,19 @@ public:
 
 
     void NormalizePixels(){
-        cout << "Pixels Normalization begins....\n";
+        std::cout << "Pixels Normalization begins....\n";
         for(int i = 0; i < 60000*784; i++){
             normalized_images[i] = (double) ((unsigned char)images[i]) / 255.0;
         }
-        cout << "Pixels Normalized Successfully\n";
+        std::cout << "Pixels Normalized Successfully\n";
     }
-
+    
     void OneHotEncode(){
         label_one_hot_encoded = new double [600000]{};
         for(int i = 0; i < 60000; i++){
             label_one_hot_encoded[(i * 10) + (int)(unsigned char)label_exact[i]] = 1;
         }
-        cout << "One Hot Encoded\n";
+        std::cout << "One Hot Encoded\n";
     }
 
     int LoadFile(){
@@ -70,11 +69,11 @@ public:
         std::ifstream labels_file("/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/train-labels-idx1-ubyte", std::ios::binary);
 
         if(!image_file.is_open()) {
-            cerr << "Error: images file unavailable\n";
+            std::cerr << "Error: images file unavailable\n";
             return 1;
         }
         if(!labels_file.is_open()) {
-            cerr << "Error: labels file unavailable\n";
+            std::cerr << "Error: labels file unavailable\n";
             return 1;
         }
 

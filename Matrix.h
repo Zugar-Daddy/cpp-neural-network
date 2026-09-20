@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
+
 class Matrix{
 
     int row, col = 0;
@@ -106,7 +107,7 @@ public:
         int n1 = m1.row, n2 = m1.col, mm1 = m2.row, mm2 = m2.col;
 
         if(n1 != mm1 || n2 != mm2){
-            throw std::invalid_argument("Invalid Multiplication");
+            throw std::invalid_argument("Invalid Subtraction");
         }
         
         Matrix result(m1.row, m1.col);
@@ -123,8 +124,8 @@ public:
     static Matrix Transpose(Matrix& m){
         Matrix result(m.col, m.row);
 
-        for(int i = 0; i < m.row; i++){
-            for(int j = 0; j < m.col; j++){
+        for(int i = 0; i < m.col; i++){
+            for(int j = 0; j < m.row; j++){
                 result.matrix[i][j] = m.matrix[j][i];
             }
         }
