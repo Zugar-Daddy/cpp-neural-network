@@ -1,12 +1,13 @@
 #include "Layers.h"
 #include "Loader.h"
+#include <algorithm>
 class Trainer{
 public:
     static constexpr double alpha = 0.001;
     
-    static void Train(Loader& loader, DenseLayer& layer1, DenseLayer& layer2, int epochs){ 
+    static void Train(Loader& loader, DenseLayer& layer1, DenseLayer& layer2, int passes){ 
         long long curr = 0;
-        while(epochs--){
+        while(passes--){
 
             std::vector<std::vector<double>> image_matrix;
 
@@ -16,7 +17,8 @@ public:
 
             Matrix image(784, 1, image_matrix);
             Matrix image_label(10, 1);
-            image_label.matrix[(int)(unsigned char) loader.label_exact[curr]][0] = 1;
+            double label = (int)(unsigned char) loader.label_exact[curr];
+            image_label.matrix[label][0] = 1;
             // std::cout << "image is: " << (int)(unsigned char) loader.label_exact[curr] << '\n';
 
             // First pass
@@ -53,6 +55,20 @@ public:
             Matrix alphaDB1 = Matrix::Multiply(alpha, db1);
             layer1.biases  = Matrix::Sub(layer1.biases,  alphaDB1);
 
+
+            if(curr % 5000 == 0){
+                double Loss = -label * log(a2.matrix[label][0]);
+                double Confidence = -2;
+                for(int i = 0; i < 10; i++){
+                    Confidence = std::max(Confidence, a2.matrix[i][0]);
+                }
+                int deadRelus = 0;
+                for(int i = 0; i < 128; i++){
+                    if(a1.matrix[i][0] == 0) deadRelus++;
+                }
+
+                std::cout << "Step [" << curr << "/60000] | Loss: " << Loss << " | Confidence: " << Confidence << " | Dead ReLUs: " << deadRelus << "/128\n";
+            }
             curr ++;
         }
     }
