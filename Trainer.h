@@ -26,34 +26,26 @@ public:
             Matrix a2 = layer2.forward(a1, ACTIVATION_FUNCTION::SoftMax);
 
             Matrix dz2 = Matrix::Sub(a2, image_label);
-            Matrix a1T = Matrix::Transpose(a1);
-            Matrix dW2 = Matrix::Multiply(dz2, a1T);
-            Matrix db2 = dz2;
-            Matrix dW2T = Matrix::Transpose(layer2.weights); 
-            Matrix da1 = Matrix::Multiply(dW2T, dz2); // (128 x 10) * (10 x 1) = (128 x 1)
+            layer2.d_weights = Matrix::Multiply(dz2, Matrix::Transpose(a1));
+            layer2.d_biases = dz2;
+            Matrix da1 = Matrix::Multiply(Matrix::Transpose(layer2.weights), dz2); // (128 x 10) * (10 x 1) = (128 x 1)
             // now we check the z's, basically doing ReLU'(z)
             Matrix dz1 = da1; // (128 x 1)
             for(int i = 0; i < 128; i++){
                 if(layer1.z.matrix[i][0] <= 0) dz1.matrix[i][0] = 0;
             }
-            // (1 x 784)
-            Matrix a0T = Matrix::Transpose(image);
-            Matrix dW1 = Matrix::Multiply(dz1, a0T); // (128 x 1) * (1 x 784)
-            Matrix db1 = dz1;
+            layer1.d_weights = Matrix::Multiply(dz1, Matrix::Transpose(image)); // (128 x 1) * (1 x 784)
+            layer1.d_biases = dz1;
 
 
             // Training
             // Layer 2
-            Matrix alphaDW2 = Matrix::Multiply(alpha, dW2);
-            layer2.weights = Matrix::Sub(layer2.weights, alphaDW2);
-            Matrix alphaDB2 = Matrix::Multiply(alpha, db2);
-            layer2.biases  = Matrix::Sub(layer2.biases,  alphaDB2);
+            layer2.weights = Matrix::Sub(layer2.weights, Matrix::Multiply(alpha, layer2.d_weights));
+            layer2.biases  = Matrix::Sub(layer2.biases,  Matrix::Multiply(alpha, layer2.d_biases));
 
             // Layer 1
-            Matrix alphaDW1 = Matrix::Multiply(alpha, dW1);
-            layer1.weights = Matrix::Sub(layer1.weights, alphaDW1);
-            Matrix alphaDB1 = Matrix::Multiply(alpha, db1);
-            layer1.biases  = Matrix::Sub(layer1.biases,  alphaDB1);
+            layer1.weights = Matrix::Sub(layer1.weights, Matrix::Multiply(alpha, layer1.d_weights));
+            layer1.biases  = Matrix::Sub(layer1.biases,  Matrix::Multiply(alpha, layer1.d_biases));
 
 
             if(curr % 5000 == 0){
@@ -67,7 +59,7 @@ public:
                     if(a1.matrix[i][0] == 0) deadRelus++;
                 }
 
-                std::cout << "Step [" << curr << "/60000] | Loss: " << Loss << " | Confidence: " << Confidence << " | Dead ReLUs: " << deadRelus << "/128\n";
+                std::cout << "Step [" << curr << "/60000] | Loss: " << Loss << " | Confidence: " << Confidence * 100 << "% | Dead ReLUs: " << deadRelus << "/128\n";
             }
             curr ++;
         }

@@ -1,13 +1,13 @@
-Step [0/60000] | Loss: 9.51585 | Confidence: 0.1877 | Dead ReLUs: 65/128
-Step [5000/60000] | Loss: 4.12124 | Confidence: 0.555021 | Dead ReLUs: 39/128
-Step [10000/60000] | Loss: 0.0306315 | Confidence: 0.989841 | Dead ReLUs: 44/128
-Step [15000/60000] | Loss: 1.87821 | Confidence: 0.686848 | Dead ReLUs: 37/128
-Step [20000/60000] | Loss: 0.0257313 | Confidence: 0.994867 | Dead ReLUs: 41/128
-Step [25000/60000] | Loss: 3.03313 | Confidence: 0.363839 | Dead ReLUs: 30/128
-Step [30000/60000] | Loss: 0.0211831 | Confidence: 0.992964 | Dead ReLUs: 42/128
-Step [35000/60000] | Loss: 0.00942888 | Confidence: 0.990615 | Dead ReLUs: 43/128
-Step [40000/60000] | Loss: 0.00920499 | Confidence: 0.998686 | Dead ReLUs: 31/128
-Step [45000/60000] | Loss: 0.223984 | Confidence: 0.928058 | Dead ReLUs: 37/128
-Step [50000/60000] | Loss: 0.35734 | Confidence: 0.887707 | Dead ReLUs: 43/128
-Step [55000/60000] | Loss: 0.0237997 | Confidence: 0.976481 | Dead ReLUs: 45/128
-Overall Accuracy: 92.14%
+Step [0/60000] | Loss: 9.57303 | Confidence: 14.74% | Dead ReLUs: 71/128
+Step [5000/60000] | Loss: 2.48465 | Confidence: 70.1208% | Dead ReLUs: 42/128
+Step [10000/60000] | Loss: 0.0441192 | Confidence: 98.5401% | Dead ReLUs: 35/128
+Step [15000/60000] | Loss: 1.90757 | Confidence: 68.2827% | Dead ReLUs: 38/128
+Step [20000/60000] | Loss: 0.0452647 | Confidence: 99.0988% | Dead ReLUs: 39/128
+Step [25000/60000] | Loss: 2.67754 | Confidence: 40.9625% | Dead ReLUs: 40/128
+Step [30000/60000] | Loss: 0.0249422 | Confidence: 99.172% | Dead ReLUs: 53/128
+Step [35000/60000] | Loss: 0.00919847 | Confidence: 99.0844% | Dead ReLUs: 46/128
+Step [40000/60000] | Loss: 0.00959109 | Confidence: 99.8631% | Dead ReLUs: 45/128
+Step [45000/60000] | Loss: 0.253724 | Confidence: 91.8903% | Dead ReLUs: 37/128
+Step [50000/60000] | Loss: 0.414444 | Confidence: 87.097% | Dead ReLUs: 39/128
+Step [55000/60000] | Loss: 0.0249484 | Confidence: 97.536% | Dead ReLUs: 44/128
+Overall Accuracy: 92.01%

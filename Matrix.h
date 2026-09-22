@@ -36,7 +36,7 @@ public:
         
     }
 
-    static Matrix Multiply(Matrix& m1, Matrix& m2, bool elementWise = false){
+    static Matrix Multiply(const Matrix& m1, const Matrix& m2, bool elementWise = false){
         int row1 = m1.row, col1 = m1.col, row2 = m2.row, col2 = m2.col;
 
         if(!elementWise){
@@ -73,7 +73,7 @@ public:
         }
     }
 
-    static Matrix Multiply(double c, Matrix& m){
+    static Matrix Multiply(double c, const Matrix& m){
         Matrix result(m.row, m.col);
 
         for(int i = 0; i < m.row; i++){
@@ -85,7 +85,7 @@ public:
         return result;
     }
 
-    static Matrix Add(Matrix& m1, Matrix& m2){
+    static Matrix Add(const Matrix& m1, const Matrix& m2){
         int n1 = m1.row, n2 = m1.col, mm1 = m2.row, mm2 = m2.col;
 
         if(n1 != mm1 || n2 != mm2){
@@ -103,7 +103,7 @@ public:
         return result;
     }
 
-    static Matrix Sub(Matrix& m1, Matrix& m2){
+    static Matrix Sub(const Matrix& m1, const Matrix& m2){
         int n1 = m1.row, n2 = m1.col, mm1 = m2.row, mm2 = m2.col;
 
         if(n1 != mm1 || n2 != mm2){
@@ -121,7 +121,7 @@ public:
         return result;
     }
 
-    static Matrix Transpose(Matrix& m){
+    static Matrix Transpose(const Matrix& m){
         Matrix result(m.col, m.row);
 
         for(int i = 0; i < m.col; i++){
@@ -133,7 +133,7 @@ public:
         return result;
     }
 
-    static Matrix Apply_ReLU(Matrix& m){
+    static Matrix Apply_ReLU(const Matrix& m){
         Matrix result(m.row, m.col);
         for(int i = 0; i < m.row; i++){
             for(int j = 0; j < m.col; j++){
@@ -145,7 +145,7 @@ public:
 
 
 
-    static Matrix Apply_SoftMax(Matrix& m){
+    static Matrix Apply_SoftMax(const Matrix& m){
 
         int r = m.row, c = m.col;
         Matrix result(r, c);

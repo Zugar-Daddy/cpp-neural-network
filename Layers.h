@@ -19,7 +19,6 @@ public:
     Matrix d_biases;
 
     // Cache (saved during forward pass for backprop)
-    Matrix input;  
     Matrix z;           
     Matrix a;           
 
@@ -43,9 +42,7 @@ public:
     }
 
     Matrix forward(Matrix& inp, ACTIVATION_FUNCTION Function){
-        input = inp;
-        z = Matrix::Multiply(weights, inp);
-        z = Matrix::Add(z, biases);
+        z = Matrix::Add(Matrix::Multiply(weights, inp), biases);
 
         if(Function == ACTIVATION_FUNCTION::SoftMax){
             a = Matrix::Apply_SoftMax(z);
