@@ -63,6 +63,7 @@ public:
             }
             curr ++;
         }
+        loader.DeleteAllDynamic();
     }
 };
 

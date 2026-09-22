@@ -40,5 +40,6 @@ public:
         }
 
         std::cout << "Overall Accuracy: " << (double)correct / total * 100.0 << "%" << std::endl;
+        loader.DeleteAllDynamic();
     }
 };
