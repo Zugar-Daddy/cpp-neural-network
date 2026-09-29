@@ -150,7 +150,7 @@ public:
         return 0;
     }
 
-    void DeleteAllDynamic(){
+    ~Loader(){
         delete[] images; 
         delete[] normalized_images;        
         delete[] label_exact;

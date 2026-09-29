@@ -7,7 +7,7 @@ int main(){
     DenseLayer layer1(784, 128);
     DenseLayer layer2(128, 10);
 
-    Trainer::Train(loader, layer1, layer2, 60000);
+    Trainer::Train(loader, layer1, layer2, 10);
 
     Tester tester;
     tester.Test(layer1, layer2);

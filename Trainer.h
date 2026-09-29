@@ -5,65 +5,69 @@ class Trainer{
 public:
     static constexpr double alpha = 0.001;
     
-    static void Train(Loader& loader, DenseLayer& layer1, DenseLayer& layer2, int passes){ 
-        long long curr = 0;
-        while(passes--){
+    static void Train(Loader& loader, DenseLayer& layer1, DenseLayer& layer2, int epochs){ 
+        
+        while(epochs--){
+            long curr = 0;
+            int passes = *reinterpret_cast<uint32_t*>(loader.num_images);
+            std::cout << "Epoch: " << epochs << '\n';
+            while(passes--){
 
-            std::vector<std::vector<double>> image_matrix;
+                std::vector<std::vector<double>> image_matrix;
 
-            for(int i = 784 * curr; i < (curr * 784) + 784; i++){
-                image_matrix.push_back({loader.normalized_images[i]});
-            }
-
-            Matrix image(784, 1, image_matrix);
-            Matrix image_label(10, 1);
-            double label = (int)(unsigned char) loader.label_exact[curr];
-            image_label.matrix[label][0] = 1;
-            // std::cout << "image is: " << (int)(unsigned char) loader.label_exact[curr] << '\n';
-
-            // First pass
-            Matrix a1 = layer1.forward(image, ACTIVATION_FUNCTION::ReLU);
-            Matrix a2 = layer2.forward(a1, ACTIVATION_FUNCTION::SoftMax);
-
-            Matrix dz2 = Matrix::Sub(a2, image_label);
-            layer2.d_weights = Matrix::Multiply(dz2, Matrix::Transpose(a1));
-            layer2.d_biases = dz2;
-            Matrix da1 = Matrix::Multiply(Matrix::Transpose(layer2.weights), dz2); // (128 x 10) * (10 x 1) = (128 x 1)
-            // now we check the z's, basically doing ReLU'(z)
-            Matrix dz1 = da1; // (128 x 1)
-            for(int i = 0; i < 128; i++){
-                if(layer1.z.matrix[i][0] <= 0) dz1.matrix[i][0] = 0;
-            }
-            layer1.d_weights = Matrix::Multiply(dz1, Matrix::Transpose(image)); // (128 x 1) * (1 x 784)
-            layer1.d_biases = dz1;
-
-
-            // Training
-            // Layer 2
-            layer2.weights = Matrix::Sub(layer2.weights, Matrix::Multiply(alpha, layer2.d_weights));
-            layer2.biases  = Matrix::Sub(layer2.biases,  Matrix::Multiply(alpha, layer2.d_biases));
-
-            // Layer 1
-            layer1.weights = Matrix::Sub(layer1.weights, Matrix::Multiply(alpha, layer1.d_weights));
-            layer1.biases  = Matrix::Sub(layer1.biases,  Matrix::Multiply(alpha, layer1.d_biases));
-
-
-            if(curr % 5000 == 0){
-                double Loss = -label * log(a2.matrix[label][0]);
-                double Confidence = -2;
-                for(int i = 0; i < 10; i++){
-                    Confidence = std::max(Confidence, a2.matrix[i][0]);
+                for(int i = 784 * curr; i < (curr * 784) + 784; i++){
+                    image_matrix.push_back({loader.normalized_images[i]});
                 }
-                int deadRelus = 0;
+
+                Matrix image(784, 1, image_matrix);
+                Matrix image_label(10, 1);
+                double label = (int)(unsigned char) loader.label_exact[curr];
+                image_label.matrix[label][0] = 1;
+                // std::cout << "image is: " << (int)(unsigned char) loader.label_exact[curr] << '\n';
+
+                // First pass
+                Matrix a1 = layer1.forward(image, ACTIVATION_FUNCTION::ReLU);
+                Matrix a2 = layer2.forward(a1, ACTIVATION_FUNCTION::SoftMax);
+
+                Matrix dz2 = Matrix::Sub(a2, image_label);
+                layer2.d_weights = Matrix::Multiply(dz2, Matrix::Transpose(a1));
+                layer2.d_biases = dz2;
+                Matrix da1 = Matrix::Multiply(Matrix::Transpose(layer2.weights), dz2); // (128 x 10) * (10 x 1) = (128 x 1)
+                // now we check the z's, basically doing ReLU'(z)
+                Matrix dz1 = da1; // (128 x 1)
                 for(int i = 0; i < 128; i++){
-                    if(a1.matrix[i][0] == 0) deadRelus++;
+                    if(layer1.z.matrix[i][0] <= 0) dz1.matrix[i][0] = 0;
                 }
+                layer1.d_weights = Matrix::Multiply(dz1, Matrix::Transpose(image)); // (128 x 1) * (1 x 784)
+                layer1.d_biases = dz1;
 
-                std::cout << "Step [" << curr << "/60000] | Loss: " << Loss << " | Confidence: " << Confidence * 100 << "% | Dead ReLUs: " << deadRelus << "/128\n";
+
+                // Training
+                // Layer 2
+                layer2.weights = Matrix::Sub(layer2.weights, Matrix::Multiply(alpha, layer2.d_weights));
+                layer2.biases  = Matrix::Sub(layer2.biases,  Matrix::Multiply(alpha, layer2.d_biases));
+
+                // Layer 1
+                layer1.weights = Matrix::Sub(layer1.weights, Matrix::Multiply(alpha, layer1.d_weights));
+                layer1.biases  = Matrix::Sub(layer1.biases,  Matrix::Multiply(alpha, layer1.d_biases));
+
+
+                if(curr % 5000 == 0){
+                    double Loss = -label * log(a2.matrix[label][0]);
+                    double Confidence = -2;
+                    for(int i = 0; i < 10; i++){
+                        Confidence = std::max(Confidence, a2.matrix[i][0]);
+                    }
+                    int deadRelus = 0;
+                    for(int i = 0; i < 128; i++){
+                        if(a1.matrix[i][0] == 0) deadRelus++;
+                    }
+
+                    std::cout << "Step [" << curr << "/60000] | Loss: " << Loss << " | Confidence: " << Confidence * 100 << "% | Dead ReLUs: " << deadRelus << "/128\n";
+                }
+                curr ++;
             }
-            curr ++;
         }
-        loader.DeleteAllDynamic();
     }
 };
 
