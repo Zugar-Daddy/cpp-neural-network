@@ -1,9 +1,10 @@
 #include "Tester.h"
 #include "WeightIO.h"
 
+
 int main(){
-    Loader loader;
-    loader.LoadTrainFile();
+    // Loader loader;
+    // loader.LoadDataSet(train_images_digits, train_labels_digits);
 
     DenseLayer layer1(784, 128);
     DenseLayer layer2(128, 10);

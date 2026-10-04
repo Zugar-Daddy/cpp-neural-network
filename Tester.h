@@ -1,14 +1,15 @@
-#include "Trainer.h"
+#include "Loader.h"
+#include "Layers.h"
 
 class Tester{
 public:
 
     void Test(DenseLayer& layer1, DenseLayer& layer2){
         Loader loader;
-        loader.LoadTestFile();
-
+        loader.LoadDataSet(test_images_digits, test_labels_digits);
+        
         int correct = 0;
-        int total = 10000;
+        int total = loader.total_images;
 
         for (int start = 0; start < total; start++) {
 

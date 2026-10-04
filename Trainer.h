@@ -9,17 +9,17 @@ public:
         
         while(epochs--){
             long curr = 0;
-            int passes = *reinterpret_cast<uint32_t*>(loader.num_images);
+            int passes = loader.total_images;
             std::cout << "Epoch: " << epochs << '\n';
             while(passes--){
 
                 std::vector<std::vector<double>> image_matrix;
 
-                for(int i = 784 * curr; i < (curr * 784) + 784; i++){
+                for(int i = loader.image_dim * curr; i < (curr * loader.image_dim) + loader.image_dim; i++){
                     image_matrix.push_back({loader.normalized_images[i]});
                 }
 
-                Matrix image(784, 1, image_matrix);
+                Matrix image(loader.image_dim, 1, image_matrix);
                 Matrix image_label(10, 1);
                 double label = (int)(unsigned char) loader.label_exact[curr];
                 image_label.matrix[label][0] = 1;
