@@ -1,0 +1,56 @@
+#pragma once
+
+#include <vector>
+#include <fstream>
+#include <iostream>
+
+namespace weightIO {
+    static bool WriteWeights(const std::string& file, const std::vector<std::vector<double>>& mat){
+        std::ofstream outFile(file);
+    
+        if (!outFile.is_open()){
+            std::cerr << "Error: File can't be written: " << file << '\n';
+            return false;
+        }
+
+        int row = mat.size();
+        int col = mat[0].size();
+
+        outFile << row << '\n' << col << '\n';
+
+        for (auto it : mat){
+            for (auto val: it) {
+                outFile << val << '\n';
+            }
+        }
+
+        outFile.close();
+        return true;
+    }
+
+    static bool ReadWeights(const std::string& file, std::vector<std::vector<double>>& mat){
+        std::ifstream inFile(file);
+
+        if (!inFile.is_open()){
+            std::cerr << "Error: File didn't open: " << file << '\n';
+            return false;
+        }
+
+        int rows, cols;
+        inFile >> rows >> cols;
+
+        mat.resize(rows, std::vector<double>(cols));
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                if(!(inFile >> mat[i][j])){
+                    std::cerr << "Error: File can't be read: " << file << '\n';
+                    return false;
+                }
+            }
+        }
+        
+        inFile.close();
+        return true;
+    }
+}
