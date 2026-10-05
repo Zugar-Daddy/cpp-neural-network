@@ -20,22 +20,11 @@ public:
                 }
 
                 Matrix image(loader.image_dim, 1, image_matrix);
-
-
-
-//////////////////////////////////////////////////////////////////
-                // change comes here/////////////////////////////////
-                Matrix image_label(10, 1);///////////
-/////////////////////////////////////////////////////////////////////////////
+                Matrix image_label(10, 1);
 
 
                 double label = (int)(unsigned char) loader.label_exact[curr];
                 image_label.matrix[label][0] = 1;
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-                // std::cout << "image is: " << (int)(unsigned char) loader.label_exact[curr] << '\n';
-
 
                 DenseLayer& layer1 = layers[0];
                 DenseLayer& layer2 = layers[1];

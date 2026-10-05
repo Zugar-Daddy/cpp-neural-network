@@ -7,7 +7,6 @@ public:
     void Test(std::vector<DenseLayer>& layers){
         Loader loader;
         loader.LoadDataSet(test_images_digits, test_labels_digits);
-        // loader.LoadDataSet(test_images_letters, test_labels_letters);
 
         int correct = 0;
         int total = loader.total_images;
@@ -32,6 +31,7 @@ public:
             // max prediction wins
             double maxi = -1.0;
             int predicted_idx = 0;
+
             for(int i = 0; i < 10; i++){
                 if(maxi < a_n.matrix[i][0]){
                     predicted_idx = i;

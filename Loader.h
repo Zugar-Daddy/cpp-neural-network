@@ -9,11 +9,6 @@ static std::string train_labels_digits = "/home/madhav_bhardwaj/Desktop/Career/L
 static std::string test_images_digits = "/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/t10k-images-idx3-ubyte";
 static std::string test_labels_digits = "/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/t10k-labels-idx1-ubyte";
 
-static std::string train_images_letters = "/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/emnist-letters-train-images-idx3-ubyte";
-static std::string train_labels_letters = "/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/emnist-letters-train-labels-idx1-ubyte";
-static std::string test_images_letters = "/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/emnist-letters-test-images-idx3-ubyte";
-static std::string test_labels_letters = "/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/emnist-letters-test-labels-idx1-ubyte";
-
 class Loader{
     
 public:
@@ -59,6 +54,7 @@ public:
     }
 
 
+    // had functionality for letters but I'm abandoning it, moving on to better things :)
     void NormalizePixels(bool letters = false){
         if(letters){
             for(int i = 0; i < total_images; i++){
