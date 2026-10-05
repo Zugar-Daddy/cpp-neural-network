@@ -5,7 +5,7 @@ class Trainer{
 public:
     static constexpr double alpha = 0.001;
     
-    static void Train(Loader& loader, DenseLayer& layer1, DenseLayer& layer2, int epochs){ 
+    static void Train(Loader& loader, std::vector<DenseLayer>& layers, int epochs){ 
         
         while(epochs--){
             long curr = 0;
@@ -20,11 +20,25 @@ public:
                 }
 
                 Matrix image(loader.image_dim, 1, image_matrix);
-                Matrix image_label(10, 1);
+
+
+
+//////////////////////////////////////////////////////////////////
+                // change comes here/////////////////////////////////
+                Matrix image_label(10, 1);///////////
+/////////////////////////////////////////////////////////////////////////////
+
+
                 double label = (int)(unsigned char) loader.label_exact[curr];
                 image_label.matrix[label][0] = 1;
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
                 // std::cout << "image is: " << (int)(unsigned char) loader.label_exact[curr] << '\n';
 
+
+                DenseLayer& layer1 = layers[0];
+                DenseLayer& layer2 = layers[1];
                 // First pass
                 Matrix a1 = layer1.forward(image, ACTIVATION_FUNCTION::ReLU);
                 Matrix a2 = layer2.forward(a1, ACTIVATION_FUNCTION::SoftMax);

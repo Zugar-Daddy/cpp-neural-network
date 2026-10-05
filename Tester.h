@@ -4,10 +4,11 @@
 class Tester{
 public:
 
-    void Test(DenseLayer& layer1, DenseLayer& layer2){
+    void Test(std::vector<DenseLayer>& layers){
         Loader loader;
         loader.LoadDataSet(test_images_digits, test_labels_digits);
-        
+        // loader.LoadDataSet(test_images_letters, test_labels_letters);
+
         int correct = 0;
         int total = loader.total_images;
 
@@ -15,22 +16,26 @@ public:
 
             // making image
             std::vector<std::vector<double>> img;    
-            for(int i = start * 784; i < start * 784 + 784; i++){
+            for(int i = start * loader.image_dim; i < start * loader.image_dim + loader.image_dim; i++){
                 img.push_back({loader.normalized_images[i]});
             }
-            Matrix imgM(784, 1, img);
+            Matrix imgM(loader.image_dim, 1, img);
 
             // forward pass
-            Matrix a1 = layer1.forward(imgM, ACTIVATION_FUNCTION::ReLU);
-            Matrix a2 = layer2.forward(a1, ACTIVATION_FUNCTION::SoftMax);
+            int n = layers.size();
+            Matrix a = layers[0].forward(imgM, ACTIVATION_FUNCTION::ReLU);
+            for(int i = 0; i < n - 1; i++){
+                a = layers[i].forward(imgM, ACTIVATION_FUNCTION::ReLU);
+            }
+            Matrix a_n = layers[n - 1].forward(a, ACTIVATION_FUNCTION::SoftMax);
 
             // max prediction wins
             double maxi = -1.0;
             int predicted_idx = 0;
             for(int i = 0; i < 10; i++){
-                if(maxi < a2.matrix[i][0]){
+                if(maxi < a_n.matrix[i][0]){
                     predicted_idx = i;
-                    maxi = a2.matrix[i][0];
+                    maxi = a_n.matrix[i][0];
                 }
             }
 

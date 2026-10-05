@@ -3,8 +3,15 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include "Layers.h"
 
-namespace weightIO {
+enum Read_Write_Mode{
+    Read,
+    Write
+};
+
+class weightIO {
+
     static bool WriteWeights(const std::string& file, const std::vector<std::vector<double>>& mat){
         std::ofstream outFile(file);
     
@@ -53,4 +60,23 @@ namespace weightIO {
         inFile.close();
         return true;
     }
-}
+
+public:
+    weightIO() = delete;
+    weightIO operator=(weightIO&) = delete;
+
+    static void IO_Layer(std::vector<DenseLayer>& layers, Read_Write_Mode mode){
+        if(mode == Read_Write_Mode::Read){
+            for(int i = 0; i < layers.size(); i++){
+                ReadWeights("layer" + std::to_string(i + 1), layers[i].weights.matrix);    
+                ReadWeights("biases" + std::to_string(i + 1), layers[i].biases.matrix);    
+            }
+        }
+        else{
+            for(int i = 0; i < layers.size(); i++){
+                WriteWeights("layer" + std::to_string(i + 1), layers[i].weights.matrix);    
+                WriteWeights("biases" + std::to_string(i + 1), layers[i].biases.matrix);    
+            }
+        }
+    }
+};

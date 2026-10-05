@@ -14,7 +14,6 @@ static std::string train_labels_letters = "/home/madhav_bhardwaj/Desktop/Career/
 static std::string test_images_letters = "/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/emnist-letters-test-images-idx3-ubyte";
 static std::string test_labels_letters = "/home/madhav_bhardwaj/Desktop/Career/LearningExp/CPP-Neural-Network/Datasets/emnist-letters-test-labels-idx1-ubyte";
 
-
 class Loader{
     
 public:
@@ -45,11 +44,11 @@ public:
         std::cout << "Images: " << *reinterpret_cast<uint32_t*>(num) << "\n";
         
         int c = 0;
-        for(int j = 0; j < 5; j++){
+        for(int j = 500; j < 515; j++){
             std::cout << '\n' << (int)(unsigned char)label_exact[j] << '\n' << '\n';
             for(int i = 0; i < image_dim; i++){
-                if((int)(unsigned char)images[(image_dim * j) + i] > 128) std::cout << '#';
-                else std::cout << '.';
+                if(normalized_images[(image_dim * j) + i] > 128/255.0) std::cout << '#';
+                else std::cout << '_';
                 c++;
                 if(c == col_count){
                     c = 0;
@@ -60,14 +59,31 @@ public:
     }
 
 
-    void NormalizePixels(){
-        for(int i = 0; i < total_pixels; i++){
-            normalized_images[i] = (double) ((unsigned char)images[i]) / 255.0;
+    void NormalizePixels(bool letters = false){
+        if(letters){
+            for(int i = 0; i < total_images; i++){
+                int offset = i * image_dim;
+
+                for(int r = 0; r < row_count; r++){
+                    for(int c = 0; c < col_count; c++){
+                        // Transpose mapping: swap r and c for the source index
+                        int raw_idx = offset + (c * 28 + r);
+                        int target_idx = offset + (r * 28 + c);
+
+                        normalized_images[target_idx] = (double) ((unsigned char)images[raw_idx]) / 255.0;
+                    }
+                }
+            }
+        }
+        else{
+            for(int i = 0; i < total_pixels; i++){
+                normalized_images[i] = (double) ((unsigned char)images[i]) / 255.0;
+            }
         }
         // std::cout << "Pixels Normalized Successfully\n";
     }
     
-    int LoadDataSet(const std::string& image_path, const std::string& label_path){
+    int LoadDataSet(const std::string& image_path, const std::string& label_path, bool letters = false){
         std::ifstream image_file(image_path, std::ios::binary);
         std::ifstream labels_file(label_path, std::ios::binary);
 
@@ -115,7 +131,7 @@ public:
         labels_file.read(label_exact, total_images);    
 
         normalized_images = new double[total_pixels];
-        NormalizePixels();
+        NormalizePixels(letters);
 
         // Debug();
         // closing files
